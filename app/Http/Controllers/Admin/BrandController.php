@@ -91,4 +91,10 @@ class BrandController extends Controller
 
         return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully.');
     }
+
+    public function destroy(Brand $brand)
+    {
+        $brand->delete();
+        return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully.');
+    }
 }

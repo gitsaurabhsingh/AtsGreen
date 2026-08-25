@@ -30,7 +30,11 @@
                     </td>
                     <td class="px-6 py-4 flex space-x-2">
                         <a href="{{ route('admin.brands.edit', $brand->id) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
-                        <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this brand?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 @empty

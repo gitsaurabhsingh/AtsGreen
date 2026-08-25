@@ -93,6 +93,30 @@ class FrontendController extends Controller
         abort(404);
     }
 
+    public function resalePropertyDetail($category_slug, $slug)
+    {
+        $query = \App\Models\ResaleProperty::with('project.brand', 'resaleCategory')
+            ->where('is_active', 1)
+            ->where('slug', $slug);
+
+        if ($category_slug === 'uncategorized') {
+            $query->whereNull('resale_category_id');
+        } else {
+            $query->whereHas('resaleCategory', function($q) use ($category_slug) {
+                $q->where('slug', $category_slug);
+            });
+        }
+        
+        $resaleProperty = $query->first();
+
+        if ($resaleProperty) {
+            $brands = Brand::with(['projects' => function($q) { $q->where('is_active', 1)->select('id', 'brand_id', 'project_type'); }])->where('status', 1)->get();
+            return view('frontend.resale_property', compact('brands', 'resaleProperty'));
+        }
+
+        return $this->dynamicSlugWithType($category_slug, $slug);
+    }
+
     public function dynamicSlugWithType($slug, $type)
     {
         $brands = Brand::with(['projects' => function($q) { $q->where('is_active', 1)->select('id', 'brand_id', 'project_type'); }])->where('status', 1)->get();

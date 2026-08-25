@@ -4,28 +4,50 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class ResaleProperty extends Model
 {
     protected $guarded = [];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($property) {
+            if (empty($property->slug)) {
+                $property->slug = \Illuminate\Support\Str::slug($property->title);
+            }
+        });
+
+        static::updating(function ($property) {
+            if ($property->isDirty('title')) {
+                $property->slug = \Illuminate\Support\Str::slug($property->title);
+            }
+        });
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 
     public function brand()
     {
         return $this->belongsTo(Brand::class);
     }
 
+    public function resaleCategory()
+    {
+        return $this->belongsTo(ResaleCategory::class);
+    }
+
     public function floorPlans()
     {
-        return $this->hasMany(ProjectFloorPlan::class);
+        return $this->hasMany(ResalePropertyFloorPlan::class);
     }
 
     public function faqs()
     {
-        return $this->hasMany(ProjectFaq::class);
-    }
-
-    public function resaleProperties()
-    {
-        return $this->hasMany(ResaleProperty::class);
+        return $this->hasMany(ResalePropertyFaq::class);
     }
 
     public function getFeaturedImageAttribute($value)
@@ -64,4 +86,3 @@ class Project extends Model
         return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
     }
 }
-

@@ -35,12 +35,16 @@ use App\Http\Controllers\Admin\ProjectTypeController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ResaleCategoryController;
+use App\Http\Controllers\Admin\ResalePropertyController;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('brands', BrandController::class);
     Route::post('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle_status');
     Route::resource('projects', ProjectController::class);
+    Route::resource('resale-categories', ResaleCategoryController::class);
+    Route::resource('resale-properties', ResalePropertyController::class);
     Route::resource('leads', LeadController::class);
     Route::resource('cities', CityController::class);
     Route::resource('project-types', ProjectTypeController::class);
@@ -81,5 +85,6 @@ Route::get('/blogs/{category_slug}/{slug}', [FrontendController::class, 'blogDet
 
 // Catch-all dynamic slug routes
 Route::get('/sitemap.xml', [FrontendController::class, 'sitemap'])->name('sitemap');
+Route::get('/{category_slug}/{slug}', [FrontendController::class, 'resalePropertyDetail'])->name('frontend.resale_detail');
 Route::get('/{slug}/{type}', [FrontendController::class, 'dynamicSlugWithType'])->name('frontend.dynamic.type');
 Route::get('/{slug}', [FrontendController::class, 'dynamicSlug'])->name('frontend.dynamic');

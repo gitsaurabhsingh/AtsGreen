@@ -74,6 +74,25 @@
                     Projects
                 </a>
 
+                <!-- Resale Properties Menu -->
+            <div x-data="{ expanded: {{ request()->routeIs('admin.resale-categories.*') || request()->routeIs('admin.resale-properties.*') ? 'true' : 'false' }} }" class="mb-1">
+                <button @click="expanded = ! expanded" class="w-full flex items-center justify-between px-6 py-3 text-sm font-medium transition-colors hover:bg-white/5 hover:text-white {{ request()->routeIs('admin.resale-categories.*') || request()->routeIs('admin.resale-properties.*') ? 'bg-brand/20 text-white border-r-4 border-brand' : 'text-gray-300' }}">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        Resale Management
+                    </div>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': expanded}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="expanded" class="py-2 bg-brand-dark">
+                    <a href="{{ route('admin.resale-categories.index') }}" class="flex items-center pl-14 pr-6 py-2.5 text-sm transition-colors hover:text-white hover:bg-white/5 {{ request()->routeIs('admin.resale-categories.*') ? 'text-brand font-medium' : 'text-gray-400' }}">
+                        Categories
+                    </a>
+                    <a href="{{ route('admin.resale-properties.index') }}" class="flex items-center pl-14 pr-6 py-2.5 text-sm transition-colors hover:text-white hover:bg-white/5 {{ request()->routeIs('admin.resale-properties.*') ? 'text-brand font-medium' : 'text-gray-400' }}">
+                        Properties
+                    </a>
+                </div>
+            </div>
+
                 <a href="{{ route('admin.cities.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.cities.*') ? 'bg-brand text-white' : 'text-gray-300 hover:bg-brand hover:text-white' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                     Cities
