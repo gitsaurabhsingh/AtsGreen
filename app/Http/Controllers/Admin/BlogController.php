@@ -61,10 +61,13 @@ class BlogController extends Controller
         if (auth()->user()->hasRole('blog_admin')) {
             $data['status'] = 0;
             $data['is_rejected'] = 0;
+        } else if ($data['status'] == 1) {
+            $data['published_at'] = now();
         }
 
         $blog = Blog::create($data);
 
+        $mailFailed = false;
         if (auth()->user()->hasRole('blog_admin')) {
             try {
                 \Illuminate\Support\Facades\Mail::send('emails.blog_pending', [
@@ -76,12 +79,18 @@ class BlogController extends Controller
                 ], function($message) {
                     $message->to('blogenquiriesim@gmail.com')->subject('New Blog Pending Approval');
                 });
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Mail Error: ' . $e->getMessage());
+                $mailFailed = true;
             }
         }
 
         $prefix = request()->is('admin*') ? 'admin' : 'blog-admin';
+        
+        if ($mailFailed) {
+            return redirect()->route($prefix . '.blogs.index')->with('warning', 'Blog created, but failed to send email to admin. Please check server SMTP settings.');
+        }
+        
         return redirect()->route($prefix . '.blogs.index')->with('success', 'Blog created successfully.');
     }
 
@@ -134,10 +143,13 @@ class BlogController extends Controller
         if (auth()->user()->hasRole('blog_admin')) {
             $data['status'] = 0;
             $data['is_rejected'] = 0;
+        } else if ($data['status'] == 1 && !$blog->published_at) {
+            $data['published_at'] = now();
         }
 
         $blog->update($data);
 
+        $mailFailed = false;
         if (auth()->user()->hasRole('blog_admin')) {
             try {
                 \Illuminate\Support\Facades\Mail::send('emails.blog_pending', [
@@ -149,12 +161,18 @@ class BlogController extends Controller
                 ], function($message) {
                     $message->to('blogenquiriesim@gmail.com')->subject('Updated Blog Pending Approval');
                 });
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Mail Error: ' . $e->getMessage());
+                $mailFailed = true;
             }
         }
 
         $prefix = request()->is('admin*') ? 'admin' : 'blog-admin';
+        
+        if ($mailFailed) {
+            return redirect()->route($prefix . '.blogs.index')->with('warning', 'Blog updated, but failed to send email to admin. Please check server SMTP settings.');
+        }
+        
         return redirect()->route($prefix . '.blogs.index')->with('success', 'Blog updated successfully.');
     }
 
@@ -176,7 +194,8 @@ class BlogController extends Controller
     {
         $blog->update([
             'status' => 1,
-            'is_rejected' => 0
+            'is_rejected' => 0,
+            'published_at' => $blog->published_at ?? now()
         ]);
         return redirect()->route('admin.blogs.index')->with('success', 'Blog approved successfully.');
     }
