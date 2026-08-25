@@ -41,7 +41,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getFooterLogoAttribute($value)
@@ -50,7 +50,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getHeroBgImageAttribute($value)
@@ -59,7 +59,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getAboutImageAttribute($value)
@@ -68,7 +68,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getContactImageAttribute($value)
@@ -77,7 +77,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 
     public function getAboutSideImageAttribute($value)
@@ -86,7 +86,7 @@ class SiteSetting extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 }
 

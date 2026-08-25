@@ -31,7 +31,7 @@ class HeroSlider extends Model
         if (str_starts_with($value, 'http')) {
             return $value;
         }
-        return \Illuminate\Support\Facades\Storage::disk('s3')->url($value);
+        return \Illuminate\Support\Facades\Storage::url($value);
     }
 }
 
