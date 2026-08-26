@@ -47,7 +47,7 @@
                             @endif
                         </div>
                         
-                        <h2 class="text-xl md:text-2xl font-heading font-bold text-gray-900 dark:text-white mb-4 line-clamp-2 group-hover:text-brand-accent transition-colors">
+                        <h2 class="text-lg md:text-xl font-heading font-semibold text-gray-900 dark:text-white mb-3 leading-snug line-clamp-2 group-hover:text-brand-accent transition-colors">
                             <a href="{{ route('frontend.blog_detail', ['category_slug' => $blog->blogCategory->slug ?? 'uncategorized', 'slug' => $blog->slug]) }}/">{{ $blog->title }}</a>
                         </h2>
                         

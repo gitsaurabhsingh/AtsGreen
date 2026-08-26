@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Pagination\Paginator::useTailwind();
         try {
             \Illuminate\Support\Facades\View::composer('*', function ($view) {
                 $siteSetting = \App\Models\SiteSetting::firstOrCreate(

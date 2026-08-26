@@ -33,13 +33,19 @@
             }
         }
     </script>
+    <style>
+        nav[aria-label="Pagination"] svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+    </style>
     
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="font-sans antialiased bg-gray-100 text-gray-900" x-data="{ sidebarOpen: false }">
     @php
-        $isAdminPrefix = request()->is('admin*');
+        $isAdminPrefix = request()->is('admin*') || (auth()->check() && !auth()->user()->hasRole('blog_admin'));
         $prefix = $isAdminPrefix ? 'admin' : 'blog-admin';
         $logoutRoute = $isAdminPrefix ? route('logout') : route('blog-admin.logout');
     @endphp
@@ -157,15 +163,21 @@
                 <div class="flex items-center">
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click="dropdownOpen = !dropdownOpen" class="flex items-center text-sm font-medium text-gray-700 focus:outline-none transition hover:text-brand">
-                            <span class="mr-2">{{ Auth::user()->name ?? 'Admin User' }}</span>
-                            <img class="w-8 h-8 rounded-full border-2 border-brand" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'A U') }}&color=2a4d3a&background=e2e8f0" alt="Avatar">
+                            <span class="mr-2 hidden sm:block">{{ Auth::user()->name ?? 'Admin User' }}</span>
+                            @php
+                                $nameParts = explode(' ', Auth::user()->name ?? 'A U');
+                                $initials = substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : '');
+                            @endphp
+                            <div class="w-8 h-8 rounded-full border border-brand bg-[#f1f5f9] flex items-center justify-center text-brand text-xs font-semibold">
+                                {{ strtoupper($initials) }}
+                            </div>
                             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         
                         <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition class="absolute right-0 w-48 mt-2 bg-white rounded-md shadow-xl z-20 border border-gray-100" style="display: none;">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                            <div class="border-t border-gray-100"></div>
+                            @if($isAdminPrefix && !auth()->user()->hasRole('blog_admin'))
+                            <a href="{{ route('admin.settings.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            @endif
                             <form method="POST" action="{{ $logoutRoute }}">
                                 @csrf
                                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Log Out</button>

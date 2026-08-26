@@ -19,7 +19,7 @@ class BlogController extends Controller
             $query->where('user_id', auth()->id());
         }
 
-        $blogs = $query->paginate(10);
+        $blogs = $query->paginate(5)->withQueryString();
         return view('admin.blogs.index', compact('blogs'));
     }
 
