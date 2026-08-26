@@ -62,7 +62,19 @@ class FrontendController extends Controller
     public function blogDetail($category_slug, $slug)
     {
         $brands = Brand::with(['projects' => function($q) { $q->where('is_active', 1)->select('id', 'brand_id', 'project_type'); }])->where('status', 1)->get();
-        $blog = Blog::where('slug', $slug)->where('status', 1)->firstOrFail();
+        $query = Blog::where('slug', $slug);
+        
+        if (auth()->check()) {
+            if (auth()->user()->hasRole('blog_admin')) {
+                $query->where(function($q) {
+                    $q->where('status', 1)->orWhere('user_id', auth()->id());
+                });
+            }
+        } else {
+            $query->where('status', 1);
+        }
+        
+        $blog = $query->firstOrFail();
         
         // Increment views
         $blog->increment('views');
