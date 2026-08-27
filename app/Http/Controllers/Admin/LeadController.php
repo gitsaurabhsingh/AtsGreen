@@ -13,4 +13,9 @@ class LeadController extends Controller
         $leads = Lead::latest()->paginate(10);
         return view('admin.leads.index', compact('leads'));
     }
+    public function destroy(Lead $lead)
+    {
+        $lead->delete();
+        return redirect()->back()->with('success', 'Lead deleted successfully.');
+    }
 }

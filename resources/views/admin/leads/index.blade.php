@@ -29,8 +29,12 @@
                     <td class="px-6 py-4">
                         <span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">New</span>
                     </td>
-                    <td class="px-6 py-4 flex space-x-2">
-                        <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                    <td class="px-6 py-4">
+                        <form action="{{ route('admin.leads.destroy', $lead->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this lead?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900 font-medium">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 @empty
