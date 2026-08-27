@@ -88,17 +88,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
                 <!-- Stat 1 -->
                 <div class="p-4" x-data="{ count: 0 }" x-intersect.once="let interval = setInterval(() => { if(count < {{ isset($siteSetting) && $siteSetting->stat_1_number ? (int)$siteSetting->stat_1_number : 25 }}) count++; else clearInterval(interval); }, 40)">
-                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">+</span></p>
+                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">{{ isset($siteSetting) && $siteSetting->stat_1_number && !is_numeric($siteSetting->stat_1_number) ? preg_replace('/[0-9]/', '', $siteSetting->stat_1_number) : '+' }}</span></p>
                     <p class="text-brand-accent uppercase tracking-[0.3em] text-xs font-bold">{{ isset($siteSetting) && $siteSetting->stat_1_label ? $siteSetting->stat_1_label : 'Years of Excellence' }}</p>
                 </div>
                 <!-- Stat 2 -->
                 <div class="p-4" x-data="{ count: 0 }" x-intersect.once="let interval = setInterval(() => { if(count < {{ isset($siteSetting) && $siteSetting->stat_2_number ? (int)$siteSetting->stat_2_number : 50 }}) count++; else clearInterval(interval); }, 20)">
-                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">+</span></p>
+                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">{{ isset($siteSetting) && $siteSetting->stat_2_number && !is_numeric($siteSetting->stat_2_number) ? preg_replace('/[0-9]/', '', $siteSetting->stat_2_number) : '+' }}</span></p>
                     <p class="text-brand-accent uppercase tracking-[0.3em] text-xs font-bold">{{ isset($siteSetting) && $siteSetting->stat_2_label ? $siteSetting->stat_2_label : 'Signature Projects' }}</p>
                 </div>
                 <!-- Stat 3 -->
                 <div class="p-4" x-data="{ count: 0 }" x-intersect.once="let interval = setInterval(() => { if(count < {{ isset($siteSetting) && $siteSetting->stat_3_number ? (int)$siteSetting->stat_3_number : 100 }}) count += 2; else clearInterval(interval); }, 10)">
-                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">{{ isset($siteSetting) && $siteSetting->stat_3_number && !is_numeric($siteSetting->stat_3_number) ? preg_replace('/[0-9]/', '', $siteSetting->stat_3_number) . '+' : '+' }}</span></p>
+                    <p class="text-5xl md:text-7xl font-serif font-black text-white mb-2"><span x-text="count">0</span><span class="text-brand-accent">{{ isset($siteSetting) && $siteSetting->stat_3_number && !is_numeric($siteSetting->stat_3_number) ? preg_replace('/[0-9]/', '', $siteSetting->stat_3_number) : '+' }}</span></p>
                     <p class="text-brand-accent uppercase tracking-[0.3em] text-xs font-bold">{{ isset($siteSetting) && $siteSetting->stat_3_label ? $siteSetting->stat_3_label : 'Happy Families' }}</p>
                 </div>
             </div>
@@ -123,6 +123,4 @@
         }
     </style>
     
-    <!-- Alpine Intersect for animations -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 @endsection
