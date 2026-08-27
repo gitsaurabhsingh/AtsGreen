@@ -7,7 +7,15 @@
 @section('content')
 
 <!-- Blog Main Section -->
+@if($blog->banner_image)
+<div class="w-full h-64 md:h-96 lg:h-[30rem] mt-24 md:mt-28 relative overflow-hidden">
+    <img src="{{ $blog->banner_image }}" alt="{{ $blog->title }} Banner" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black/20"></div>
+</div>
+<section class="pt-12 pb-16 md:pb-24 bg-[#fcfcfc]">
+@else
 <section class="pt-32 pb-16 md:pt-40 md:pb-24 bg-[#fcfcfc]">
+@endif
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">

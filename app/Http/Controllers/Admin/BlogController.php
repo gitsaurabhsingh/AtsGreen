@@ -38,10 +38,11 @@ class BlogController extends Controller
             'excerpt' => 'nullable|string',
             'content' => 'nullable|string',
             'featured_image' => 'nullable|image|max:2048',
+            'banner_image' => 'nullable|image|max:2048',
             'status' => 'required|boolean',
         ]);
 
-        $data = $request->except(['featured_image', '_token', '_method']);
+        $data = $request->except(['featured_image', 'banner_image', '_token', '_method']);
         
         $slug = Str::slug($request->title);
         $originalSlug = $slug;
@@ -54,6 +55,10 @@ class BlogController extends Controller
 
         if ($request->hasFile('featured_image')) {
             $data['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+        }
+        
+        if ($request->hasFile('banner_image')) {
+            $data['banner_image'] = $request->file('banner_image')->store('blogs/banners', 'public');
         }
 
         $data['user_id'] = auth()->id();
@@ -117,10 +122,11 @@ class BlogController extends Controller
             'excerpt' => 'nullable|string',
             'content' => 'nullable|string',
             'featured_image' => 'nullable|image|max:2048',
+            'banner_image' => 'nullable|image|max:2048',
             'status' => 'required|boolean',
         ]);
 
-        $data = $request->except(['featured_image', '_token', '_method']);
+        $data = $request->except(['featured_image', 'banner_image', '_token', '_method']);
         
         if ($request->title !== $blog->title) {
             $slug = Str::slug($request->title);
@@ -138,6 +144,13 @@ class BlogController extends Controller
                 Storage::disk('public')->delete($blog->featured_image);
             }
             $data['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+        }
+
+        if ($request->hasFile('banner_image')) {
+            if ($blog->banner_image) {
+                Storage::disk('public')->delete($blog->banner_image);
+            }
+            $data['banner_image'] = $request->file('banner_image')->store('blogs/banners', 'public');
         }
 
         if (auth()->user()->hasRole('blog_admin')) {
@@ -184,6 +197,9 @@ class BlogController extends Controller
 
         if ($blog->featured_image) {
             Storage::disk('public')->delete($blog->featured_image);
+        }
+        if ($blog->banner_image) {
+            Storage::disk('public')->delete($blog->banner_image);
         }
         $blog->delete();
         $prefix = request()->is('admin*') ? 'admin' : 'blog-admin';

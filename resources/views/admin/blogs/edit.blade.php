@@ -145,6 +145,40 @@
                     </div>
                 </div>
 
+                <!-- Banner Image Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+                        <h3 class="text-base font-semibold text-gray-800">Banner Image</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-brand transition-colors group cursor-pointer relative {{ $blog->banner_image ? 'hidden' : '' }}" id="banner-drop-area">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 group-hover:text-brand transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600 justify-center">
+                                    <label for="banner_image" class="relative cursor-pointer bg-white rounded-md font-medium text-brand hover:text-brand-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand">
+                                        <span>Upload new file</span>
+                                        <input id="banner_image" name="banner_image" type="file" class="sr-only" accept="image/*">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG, WEBP up to 2MB</p>
+                            </div>
+                        </div>
+                        
+                        <div id="banner-preview" class="mt-4 {{ $blog->banner_image ? '' : 'hidden' }} rounded-lg overflow-hidden border border-gray-200 relative group">
+                            @if($blog->banner_image)
+                                <img src="{{ $blog->banner_image }}" class="w-full h-auto object-cover" />
+                            @endif
+                            <label for="banner_image" class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                <span class="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded">Change Image</span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Leave blank to keep current image.</p>
+                        @error('banner_image')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
             </div>
         </div>
     </form>
@@ -176,6 +210,25 @@
                 '<span class="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded">Change Image</span></label>';
                 imagePreview.classList.remove('hidden');
                 dropArea.classList.add('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    const bannerInput = document.getElementById('banner_image');
+    const bannerPreview = document.getElementById('banner-preview');
+    const bannerDropArea = document.getElementById('banner-drop-area');
+
+    bannerInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bannerPreview.innerHTML = '<img src="' + e.target.result + '" class="w-full h-auto object-cover" />' + 
+                '<label for="banner_image" class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">' +
+                '<span class="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded">Change Image</span></label>';
+                bannerPreview.classList.remove('hidden');
+                bannerDropArea.classList.add('hidden');
             }
             reader.readAsDataURL(file);
         }

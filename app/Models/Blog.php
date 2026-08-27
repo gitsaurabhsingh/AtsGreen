@@ -26,5 +26,14 @@ class Blog extends Model
         }
         return \Illuminate\Support\Facades\Storage::url($value);
     }
+
+    public function getBannerImageAttribute($value)
+    {
+        if (!$value) return null;
+        if (str_starts_with($value, 'http')) {
+            return $value;
+        }
+        return \Illuminate\Support\Facades\Storage::url($value);
+    }
 }
 
