@@ -50,6 +50,7 @@ class ProjectController extends Controller
             'faqs' => 'nullable|array',
             'faqs.*.question' => 'required_with:faqs|string',
             'faqs.*.answer' => 'required_with:faqs|string',
+            'brochure' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'floor_plans' => 'nullable|array',
             'floor_plans.*' => 'image|max:2048',
         ]);
@@ -75,6 +76,9 @@ class ProjectController extends Controller
         }
         if ($request->hasFile('payment_plan_image')) {
             $validatedData['payment_plan_image'] = $request->file('payment_plan_image')->store('projects/payment_plans', 'public');
+        }
+        if ($request->hasFile('brochure')) {
+            $validatedData['brochure'] = $request->file('brochure')->store('projects/brochures', 'public');
         }
 
         // Remove relation arrays from project data
@@ -140,6 +144,7 @@ class ProjectController extends Controller
             'faqs' => 'nullable|array',
             'faqs.*.question' => 'required_with:faqs|string',
             'faqs.*.answer' => 'required_with:faqs|string',
+            'brochure' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'floor_plans' => 'nullable|array',
             'floor_plans.*' => 'image|max:2048',
         ]);
@@ -165,6 +170,9 @@ class ProjectController extends Controller
         }
         if ($request->hasFile('payment_plan_image')) {
             $validatedData['payment_plan_image'] = $request->file('payment_plan_image')->store('projects/payment_plans', 'public');
+        }
+        if ($request->hasFile('brochure')) {
+            $validatedData['brochure'] = $request->file('brochure')->store('projects/brochures', 'public');
         }
 
         $faqsData = $validatedData['faqs'] ?? [];

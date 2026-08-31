@@ -220,4 +220,18 @@ class FrontendController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Successfully subscribed!']);
     }
+
+    public function downloadBrochure($id)
+    {
+        $project = Project::findOrFail($id);
+        
+        if (!$project->brochure || !\Illuminate\Support\Facades\Storage::disk('public')->exists($project->brochure)) {
+            abort(404, 'Brochure not found.');
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->download(
+            $project->brochure, 
+            \Illuminate\Support\Str::slug($project->project_name) . '-brochure.pdf'
+        );
+    }
 }

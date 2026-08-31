@@ -74,6 +74,7 @@ require __DIR__.'/auth.php';
 // Enquiry Submission
 Route::post('/enquire', [FrontendController::class, 'submitEnquiry'])->name('frontend.enquire');
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('frontend.subscribe');
+Route::get('/download-brochure/{id}', [FrontendController::class, 'downloadBrochure'])->name('frontend.download_brochure');
 
 // Static Pages
 Route::get('/about', [FrontendController::class, 'about'])->name('frontend.about');

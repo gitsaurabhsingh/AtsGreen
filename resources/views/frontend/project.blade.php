@@ -10,9 +10,9 @@
         
         <!-- Animated Background -->
         <div class="absolute inset-0 z-0 overflow-hidden">
-            <img src="{{ $project->featured_image ? $project->featured_image : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80' }}" alt="{{ $project->project_name }}" class="w-full h-full object-cover opacity-50 transform transition-transform duration-[10s] ease-out scale-110 group-hover:scale-100">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-[#050505]/80 via-transparent to-[#050505]/80"></div>
+            <img src="{{ $project->featured_image ? $project->featured_image : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80' }}" alt="{{ $project->project_name }}" class="w-full h-full object-cover opacity-80 transform transition-transform duration-[10s] ease-out scale-110 group-hover:scale-100">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#050505]/50 via-transparent to-[#050505]/50"></div>
         </div>
 
         <div class="container mx-auto px-4 relative z-10 pt-16">
@@ -83,17 +83,93 @@
                 <div class="w-full lg:w-2/3 space-y-24">
                     
                     <!-- Overview -->
-                    <div x-data="{ showQr: false }">
-                        <span class="text-brand-accent font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-2 md:mb-4 block">Project Overview</span>
-                        <h2 class="text-2xl md:text-4xl font-heading font-black text-brand-dark dark:text-white mb-4 md:mb-10 leading-tight transition-colors">The Epitome of <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-accent">Exquisite Living</span></h2>
-                        
-                        <div class="prose prose-sm md:prose-lg text-justify prose-headings:font-heading prose-headings:font-bold prose-headings:text-brand-dark dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-p:leading-relaxed prose-p:font-light max-w-none transition-colors">
-                            @if($project->description)
-                                {!! $project->description !!}
-                            @else
-                                <p>Welcome to {{ $project->project_name }}, where luxury meets convenience. Experience world-class amenities and meticulously crafted spaces designed for the modern elite. Please contact our sales team for detailed information regarding this magnificent property.</p>
+                    <div x-data="{ showQr: false, showBrochureModal: false, expandedDesc: false }">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-10 gap-4 border-b border-gray-200 dark:border-gray-800 pb-6">
+                            <div class="flex-grow">
+                                <span class="text-brand-accent font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs mb-2 block">Project Overview</span>
+                                <h2 class="text-xl md:text-3xl font-heading font-black text-brand-dark dark:text-white leading-tight transition-colors">About <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-accent">{{ $project->project_name }}</span></h2>
+                            </div>
+                            @if($project->brochure)
+                            <button @click="showBrochureModal = true" class="inline-flex items-center justify-center bg-[#0a0a0a] text-white hover:bg-brand-accent hover:text-brand-dark font-bold uppercase tracking-[0.15em] px-6 py-3 md:px-8 md:py-4 text-xs md:text-sm transition-all duration-300 flex-shrink-0 shadow-xl rounded-lg border border-gray-800 self-start sm:self-auto">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Download Brochure
+                            </button>
                             @endif
                         </div>
+                        
+                        <div class="relative prose prose-sm md:prose-lg text-justify prose-headings:font-heading prose-headings:font-bold prose-headings:text-brand-dark dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-p:leading-relaxed prose-p:font-light max-w-none transition-colors">
+                            <div :class="{ 'line-clamp-4 overflow-hidden relative': !expandedDesc, 'pb-12': !expandedDesc }">
+                                @if($project->description)
+                                    {!! $project->description !!}
+                                @else
+                                    <p>Welcome to {{ $project->project_name }}, where luxury meets convenience. Experience world-class amenities and meticulously crafted spaces designed for the modern elite. Please contact our sales team for detailed information regarding this magnificent property.</p>
+                                @endif
+                                
+                                <div x-show="!expandedDesc" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#fdfbf7] dark:from-[#050505] to-transparent pointer-events-none flex items-end justify-center pb-2">
+                                </div>
+                            </div>
+                            
+                            <button @click="expandedDesc = !expandedDesc" class="w-full mt-2 text-brand-accent font-bold uppercase tracking-widest text-xs hover:text-brand-dark transition-colors flex justify-center items-center gap-2 focus:outline-none border-t border-gray-100 dark:border-gray-800 pt-4">
+                                <span x-text="expandedDesc ? 'Read Less' : 'Read More'"></span>
+                                <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': expandedDesc }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Brochure Modal -->
+                        @if($project->brochure)
+                        <template x-teleport="body">
+                            <div x-show="showBrochureModal" class="fixed inset-0 z-[999999] flex items-center justify-center p-4" x-cloak>
+                                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" @click="showBrochureModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+                                
+                                <div class="relative bg-white dark:bg-[#0a0a0a] rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-gray-100 dark:border-gray-800" 
+                                    x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" 
+                                    x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-8 scale-95" 
+                                    x-data="{ isSubmitting: false, formErrors: {}, captchaInput: '' }">
+                                    
+                                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-accent/10 rounded-bl-full pointer-events-none"></div>
+                                    
+                                    <button @click="showBrochureModal = false" class="absolute top-4 right-4 z-10 text-gray-400 hover:text-brand-dark dark:hover:text-white transition-colors bg-white/50 dark:bg-black/50 rounded-full p-2 backdrop-blur-md">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                    
+                                    <div class="p-8 sm:p-10 relative z-10">
+                                        <span class="text-brand-accent text-[10px] font-bold uppercase tracking-[0.3em] block mb-2 text-center">Exclusive Access</span>
+                                        <h3 class="text-2xl font-heading font-black text-brand-dark dark:text-white mb-2 text-center">Download Brochure</h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-8 text-center leading-relaxed">Please verify your details below to instantly access the official project brochure.</p>
+                                        
+                                        <form @submit.prevent="isSubmitting = true; formErrors = {}; fetch('{{ route('frontend.enquire') }}', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ name: $refs.bname.value, email: $refs.bemail.value, phone: $refs.bphone.value, project_name: '{{ addslashes($project->project_name) }} (Brochure Download)', captcha: captchaInput }) }).then(res => res.json()).then(data => { if(data.message && data.success) { showBrochureModal = false; window.location.href = '{{ route('frontend.download_brochure', $project->id) }}'; $refs.bname.value=''; $refs.bemail.value=''; $refs.bphone.value=''; captchaInput=''; } else { formErrors = data.errors || {}; document.getElementById('modalCaptchaImg').src='{{ captcha_src('flat') }}'+Math.random(); captchaInput=''; } }).catch(err => alert('An error occurred. Please try again.')).finally(() => isSubmitting = false)">
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <input type="text" x-ref="bname" placeholder="Full Name *" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                                                    <template x-if="formErrors.name"><p class="text-red-500 text-xs mt-1" x-text="formErrors.name[0]"></p></template>
+                                                </div>
+                                                <div>
+                                                    <input type="email" x-ref="bemail" placeholder="Email Address *" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                                                    <template x-if="formErrors.email"><p class="text-red-500 text-xs mt-1" x-text="formErrors.email[0]"></p></template>
+                                                </div>
+                                                <div>
+                                                    <input type="tel" x-ref="bphone" placeholder="Phone Number *" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                                                    <template x-if="formErrors.phone"><p class="text-red-500 text-xs mt-1" x-text="formErrors.phone[0]"></p></template>
+                                                </div>
+                                                <div>
+                                                    <div class="flex items-center gap-4 mb-3">
+                                                        <img src="{{ captcha_src('flat') }}" alt="captcha" class="rounded h-10 border border-gray-200 dark:border-gray-800 cursor-pointer" onclick="this.src='{{ captcha_src('flat') }}'+Math.random()" id="modalCaptchaImg">
+                                                        <button type="button" onclick="document.getElementById('modalCaptchaImg').src='{{ captcha_src('flat') }}'+Math.random()" class="text-[10px] text-brand-accent font-bold uppercase tracking-widest hover:text-brand-dark transition-colors">Refresh</button>
+                                                    </div>
+                                                    <input type="text" x-model="captchaInput" placeholder="Enter security code *" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                                                    <template x-if="formErrors.captcha"><p class="text-red-500 text-xs mt-1" x-text="formErrors.captcha[0]"></p></template>
+                                                </div>
+                                                <button type="submit" :disabled="isSubmitting" class="w-full bg-brand-accent text-brand-dark font-bold uppercase tracking-[0.2em] mt-6 py-4 text-sm rounded-xl hover:bg-brand-dark hover:text-white transition-colors duration-300 shadow-[0_10px_20px_rgba(212,175,55,0.2)] disabled:opacity-50">
+                                                    <span x-show="!isSubmitting">Download File</span>
+                                                    <span x-show="isSubmitting">Authenticating...</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        @endif
 
                         <!-- RERA Box -->
                         <div class="mt-8 md:mt-12 bg-white dark:bg-gray-900/50 p-5 md:p-8 rounded-none border-l-4 border-brand-accent shadow-[0_10px_40px_rgba(0,0,0,0.04)] dark:shadow-none border-r border-t border-b border-transparent dark:border-gray-800 flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-6 transition-colors">

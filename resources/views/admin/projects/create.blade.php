@@ -15,6 +15,13 @@
             </div>
 
             <div>
+                <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug (URL)</label>
+                <input type="text" name="slug" id="slug" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-2 border" value="{{ old('slug') }}">
+                <p class="text-xs text-gray-500 mt-1">Leave empty to auto-generate from project name.</p>
+                @error('slug') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+
+            <div>
                 <label for="brand_id" class="block text-sm font-medium text-gray-700 mb-1">Brand <span class="text-red-500">*</span></label>
                 <select name="brand_id" id="brand_id" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-2 border">
                     <option value="">Select Brand</option>
@@ -115,6 +122,12 @@
             <div class="mb-6">
                 <label for="payment_plan_text" class="block text-sm font-medium text-gray-700 mb-1">Payment Plan (Text)</label>
                 <textarea name="payment_plan_text" id="payment_plan_text" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-2 border" placeholder="Alternatively, describe the payment plan here...">{{ old('payment_plan_text') }}</textarea>
+            </div>
+            
+            <div class="mb-6">
+                <label for="brochure" class="block text-sm font-medium text-gray-700 mb-1">Project Brochure (PDF)</label>
+                <input type="file" name="brochure" id="brochure" accept=".pdf,.doc,.docx" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand file:text-white hover:file:bg-brand-dark border border-gray-300 rounded-md">
+                @error('brochure') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
         </div>
 
