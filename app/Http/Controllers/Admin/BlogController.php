@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Blog::latest();
+        
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
         
         if (auth()->user()->hasRole('blog_admin')) {
             $query->where('user_id', auth()->id());

@@ -7,11 +7,25 @@
     $prefix = request()->is('admin*') ? 'admin' : 'blog-admin';
 @endphp
 <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
         <h3 class="text-lg font-semibold text-gray-800">Blogs</h3>
-        <a href="{{ route($prefix.'.blogs.create') }}" class="bg-brand hover:bg-brand-dark text-white font-medium py-2 px-4 rounded transition inline-block">
-            Add New Blog
-        </a>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto">
+            <form action="{{ route($prefix.'.blogs.index') }}" method="GET" class="w-full md:w-64">
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search blogs..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand">
+                    <div class="absolute left-3 top-2.5 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </form>
+
+            <a href="{{ route($prefix.'.blogs.create') }}" class="bg-brand hover:bg-brand-dark text-white font-medium py-2 px-4 rounded transition inline-block whitespace-nowrap">
+                Add New Blog
+            </a>
+        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
