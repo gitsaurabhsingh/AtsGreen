@@ -144,6 +144,22 @@
                 @error('floor_plans') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 @error('floor_plans.*') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
+
+            @if($project->floorPlans->count() > 0)
+                <div class="mt-6">
+                    <h5 class="text-sm font-semibold text-gray-700 mb-3">Existing Floor Plans ({{ $project->floorPlans->count() }})</h5>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        @foreach($project->floorPlans as $plan)
+                            <div class="border border-gray-200 rounded-md p-2 bg-white flex flex-col items-center justify-between shadow-sm">
+                                <a href="{{ $plan->image }}" target="_blank" class="w-full h-24 flex items-center justify-center overflow-hidden mb-2">
+                                    <img src="{{ $plan->image }}" alt="{{ $plan->title }}" class="max-h-full max-w-full object-contain">
+                                </a>
+                                <span class="text-xs text-gray-600 text-center truncate w-full px-1" title="{{ $plan->title }}">{{ $plan->title }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- FAQs Dynamic Section -->
