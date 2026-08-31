@@ -97,8 +97,15 @@ class FrontendController extends Controller
         // If not a project, try to find a brand
         $brand = Brand::where('slug', $slug)->where('status', 1)->first();
         if ($brand) {
-            $projects = Project::where('brand_id', $brand->id)->where('is_active', 1)->latest()->paginate(12);
-            return view('frontend.brand', compact('brands', 'brand', 'projects'));
+            $cities = Project::where('brand_id', $brand->id)->where('is_active', 1)->whereNotNull('city')->pluck('city')->unique()->sort()->filter();
+            
+            $query = Project::where('brand_id', $brand->id)->where('is_active', 1);
+            if (request()->has('city') && request()->city != '') {
+                $query->where('city', request()->city);
+            }
+            $projects = $query->latest()->paginate(12)->withQueryString();
+            
+            return view('frontend.brand', compact('brands', 'brand', 'projects', 'cities'));
         }
 
         // If neither, 404
@@ -135,12 +142,19 @@ class FrontendController extends Controller
         
         $brand = Brand::where('slug', $slug)->where('status', 1)->first();
         if ($brand) {
-            $projects = Project::where('brand_id', $brand->id)
+            $cities = Project::where('brand_id', $brand->id)->where('is_active', 1)->where('project_type', 'like', $type)->whereNotNull('city')->pluck('city')->unique()->sort()->filter();
+            
+            $query = Project::where('brand_id', $brand->id)
                 ->where('is_active', 1)
-                ->where('project_type', 'like', $type)
-                ->latest()
-                ->paginate(12);
-            return view('frontend.brand', compact('brands', 'brand', 'projects'));
+                ->where('project_type', 'like', $type);
+                
+            if (request()->has('city') && request()->city != '') {
+                $query->where('city', request()->city);
+            }
+                
+            $projects = $query->latest()->paginate(12)->withQueryString();
+                
+            return view('frontend.brand', compact('brands', 'brand', 'projects', 'cities'));
         }
 
         abort(404);

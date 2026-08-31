@@ -359,7 +359,7 @@
                         </div>
                         
                         @if($resale->description)
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow line-clamp-3">{{ $resale->description }}</p>
+                            <div class="text-gray-500 dark:text-gray-400 text-sm mb-6 flex-grow line-clamp-3">{!! $resale->description !!}</div>
                         @endif
                         
                         <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-800">

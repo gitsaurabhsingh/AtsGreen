@@ -48,11 +48,20 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <div class="flex justify-between items-end mb-16">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
                 <div>
                     <h2 class="text-3xl md:text-5xl font-serif font-bold text-brand-dark dark:text-white mb-4">Featured <span class="italic text-brand-accent font-light">Projects</span></h2>
                     <div class="w-20 h-1 bg-brand-accent"></div>
                 </div>
+                
+                @if(isset($cities) && $cities->count() > 0)
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ request()->fullUrlWithQuery(['city' => null, 'page' => null]) }}" class="px-5 py-2 rounded-full border {{ !request('city') ? 'bg-brand-accent text-brand-dark font-bold border-brand-accent shadow-md' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300 hover:border-brand-accent dark:hover:border-brand-accent' }} transition-all text-xs tracking-wider uppercase">All</a>
+                    @foreach($cities as $city)
+                        <a href="{{ request()->fullUrlWithQuery(['city' => $city, 'page' => null]) }}" class="px-5 py-2 rounded-full border {{ request('city') == $city ? 'bg-brand-accent text-brand-dark font-bold border-brand-accent shadow-md' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300 hover:border-brand-accent dark:hover:border-brand-accent' }} transition-all text-xs tracking-wider uppercase">{{ $city }}</a>
+                    @endforeach
+                </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
