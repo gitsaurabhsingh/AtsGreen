@@ -189,7 +189,28 @@ class ProjectController extends Controller
             ]);
         }
 
-        // Store Floor Plans
+        // Update Existing Floor Plans
+        if ($request->has('existing_floor_plans')) {
+            foreach ($request->input('existing_floor_plans') as $id => $planData) {
+                $project->floorPlans()->where('id', $id)->update([
+                    'title' => $planData['title'] ?? null,
+                    'type'  => $planData['type'] ?? null,
+                    'area'  => $planData['area'] ?? null,
+                ]);
+            }
+        }
+
+        // Delete Floor Plans
+        if ($request->has('delete_floor_plans')) {
+            $floorPlansToDelete = $project->floorPlans()->whereIn('id', $request->input('delete_floor_plans'))->get();
+            foreach ($floorPlansToDelete as $fp) {
+                // Remove image from storage if needed
+                // \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $fp->image));
+                $fp->delete();
+            }
+        }
+
+        // Store New Floor Plans
         if ($request->hasFile('floor_plans')) {
             foreach ($request->file('floor_plans') as $file) {
                 $path = $file->store('projects/floor_plans', 'public');

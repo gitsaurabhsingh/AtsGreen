@@ -206,7 +206,7 @@
                             activeIndex: 0,
                             plans: [
                                 @foreach($project->floorPlans as $plan)
-                                { image: '{{ $plan->image }}', title: '{{ addslashes($plan->title) }}' }{{ !$loop->last ? ',' : '' }}
+                                { image: '{{ $plan->image }}', title: '{{ addslashes($plan->title) }}', type: '{{ addslashes($plan->type) }}', area: '{{ addslashes($plan->area) }}' }{{ !$loop->last ? ',' : '' }}
                                 @endforeach
                             ],
                             next() {
@@ -226,65 +226,96 @@
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             @foreach($project->floorPlans as $index => $plan)
-                            <div @click="activeIndex = {{ $index }}; lightboxOpen = true" class="group relative bg-white dark:bg-gray-900/50 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.03)] dark:shadow-none border border-gray-100 dark:border-gray-800 hover:border-brand-accent/30 dark:hover:border-brand-accent/50 transition-all duration-500 cursor-pointer overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-brand-dark/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-                                <div class="h-64 flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800/50 relative z-0 transition-colors">
-                                    <img src="{{ $plan->image }}" alt="{{ $plan->title }}" loading="lazy" class="max-w-full max-h-full object-contain transform group-hover:scale-110 transition-transform duration-700 mix-blend-multiply dark:mix-blend-normal">
+                            <div class="border border-gray-200 dark:border-gray-800 flex flex-col bg-white dark:bg-[#0a0a0a] transition-shadow duration-300 hover:shadow-lg">
+                                
+                                <!-- Image Section -->
+                                <div class="p-3 md:p-4 cursor-pointer" @click="activeIndex = {{ $index }}; lightboxOpen = true">
+                                    <div class="border-[3px] border-[#FFCC00] p-2 flex items-center justify-center relative min-h-[300px]">
+                                        <div class="absolute inset-0 bg-black/5 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                            <svg class="w-10 h-10 text-brand-dark drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                                        </div>
+                                        <img src="{{ $plan->image }}" alt="{{ $plan->title }}" loading="lazy" class="w-full h-auto max-h-[400px] object-contain mix-blend-multiply dark:mix-blend-normal relative z-0">
+                                    </div>
                                 </div>
-                                <div class="absolute bottom-0 left-0 w-full p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
-                                    <h3 class="text-xl font-bold text-white mb-2">{{ $plan->title ?? 'Floor Plan' }}</h3>
-                                    <span class="text-xs text-brand-accent uppercase tracking-widest font-bold">View Layout &rarr;</span>
+                                
+                                <!-- Details Box -->
+                                <div class="bg-[#EFEFEF] dark:bg-gray-900 p-6 md:px-10 md:py-8 border-t border-gray-200 dark:border-gray-800 flex flex-col justify-center flex-grow">
+                                    <div class="space-y-4">
+                                        @if($plan->type)
+                                        <div class="flex items-center text-[#2A2A2A] dark:text-gray-200 font-medium text-base md:text-lg">
+                                            <svg class="w-5 h-5 mr-3 flex-shrink-0 text-[#4A4A4A] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                            {{ $plan->type }}
+                                        </div>
+                                        @endif
+                                        
+                                        @if($plan->area)
+                                        <div class="flex items-center text-[#2A2A2A] dark:text-gray-200 font-medium text-base md:text-lg">
+                                            <svg class="w-5 h-5 mr-3 flex-shrink-0 text-[#4A4A4A] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            {{ $plan->area }}
+                                        </div>
+                                        @endif
+                                    </div>
                                 </div>
+                                
                             </div>
                             @endforeach
                         </div>
                         
                         <!-- Lightbox Modal Overlay -->
-                        <div x-show="lightboxOpen" @click.self="lightboxOpen = false" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 md:p-8 pt-24 backdrop-blur-sm cursor-pointer" x-cloak>
+                        <div x-show="lightboxOpen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4 md:p-8 backdrop-blur-sm" x-cloak>
                             
-                            <!-- Close Button (Top Right) -->
-                            <button @click="lightboxOpen = false" class="absolute top-4 right-4 md:top-8 md:right-8 z-[99999] flex items-center gap-2 px-4 py-2 text-white bg-white/10 hover:bg-brand-accent hover:text-brand-dark rounded-full transition-all duration-300 focus:outline-none border border-white/20 hover:border-brand-accent group shadow-xl">
-                                <span class="text-xs font-bold uppercase tracking-widest group-hover:text-brand-dark">Close</span>
-                                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <!-- Close Button (Top Right, moved down to avoid navbar overlap) -->
+                            <button @click="lightboxOpen = false" class="absolute top-24 right-4 md:top-32 md:right-12 z-[100000] p-4 text-white hover:text-brand-accent bg-black/80 hover:bg-black rounded-full transition-all duration-300 focus:outline-none border-2 border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] cursor-pointer pointer-events-auto flex items-center justify-center">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
                             
                             <!-- Previous Button -->
-                            <button @click.stop="prev()" class="absolute left-4 md:left-10 z-[110] p-2 text-white/50 hover:text-white bg-white/5 hover:bg-brand-accent/20 rounded-full transition-all duration-300 focus:outline-none" x-show="plans.length > 1">
-                                <svg class="w-8 h-8 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            <button @click.stop="prev()" class="absolute left-4 md:left-10 z-[110] p-3 text-white/50 hover:text-white bg-white/5 hover:bg-brand-accent/50 rounded-full transition-all duration-300 focus:outline-none backdrop-blur-md border border-white/10" x-show="plans.length > 1">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             </button>
 
                             <!-- Gallery Slider -->
-                            <div class="w-full max-w-6xl h-full flex items-center justify-center relative mt-16 md:mt-20 pointer-events-none">
+                            <div class="w-full max-w-6xl h-full flex items-center justify-center relative mt-12 pointer-events-none" @click.self="lightboxOpen = false">
                                 <template x-for="(plan, i) in plans" :key="i">
                                     <div x-show="activeIndex === i" 
-                                         x-transition:enter="transition ease-out duration-500 transform"
-                                         x-transition:enter-start="opacity-0 translate-x-12"
-                                         x-transition:enter-end="opacity-100 translate-x-0"
-                                         x-transition:leave="transition ease-in duration-500 transform absolute inset-0"
-                                         x-transition:leave-start="opacity-100 translate-x-0"
-                                         x-transition:leave-end="opacity-0 -translate-x-12"
-                                         class="w-full h-full flex flex-col items-center justify-center relative top-0 left-0 pointer-events-auto">
+                                         x-transition:enter="transition ease-out duration-300 transform"
+                                         x-transition:enter-start="opacity-0 scale-95"
+                                         x-transition:enter-end="opacity-100 scale-100"
+                                         x-transition:leave="transition ease-in duration-200 transform absolute inset-0"
+                                         x-transition:leave-start="opacity-100 scale-100"
+                                         x-transition:leave-end="opacity-0 scale-95"
+                                         class="w-full h-full flex flex-col items-center justify-center relative pointer-events-auto"
+                                         @click.self="lightboxOpen = false">
                                          
-                                        <div class="relative w-full max-h-[60vh] flex items-center justify-center p-4">
-                                            <img :src="plan.image" :alt="plan.title" loading="lazy" class="max-w-full max-h-full object-contain drop-shadow-[0_20px_50px_rgba(255,255,255,0.1)] rounded-lg bg-white/5 backdrop-blur-md p-2 border border-white/10" @click.stop>
+                                        <div class="relative w-full h-[70vh] flex items-center justify-center p-4">
+                                            <img :src="plan.image" :alt="plan.title" loading="lazy" class="max-w-full max-h-full object-contain rounded-lg bg-white p-4 shadow-[0_0_50px_rgba(255,255,255,0.1)] border border-white/20">
                                         </div>
                                         
-                                        <div class="mt-4 md:mt-6 text-center flex flex-col items-center">
-                                            <h3 x-text="plan.title" class="text-white text-xl md:text-3xl font-bold font-heading tracking-wide drop-shadow-lg"></h3>
-                                            <p class="text-brand-accent text-xs md:text-sm uppercase tracking-[0.3em] mt-2 font-bold" x-text="`Plan ${i + 1} of ${plans.length}`"></p>
+                                        <div class="mt-6 text-center">
+                                            <h3 x-text="plan.title" class="text-white text-2xl font-bold font-heading mb-3"></h3>
                                             
-                                            <!-- Prominent Cancel Button Below Image -->
-                                            <button @click="lightboxOpen = false" class="mt-6 flex items-center gap-2 px-6 py-2.5 text-white bg-red-600/80 hover:bg-red-600 rounded-full transition-all duration-300 focus:outline-none shadow-lg border border-red-500/50">
-                                                <span class="text-xs font-bold uppercase tracking-widest">Cancel</span>
-                                            </button>
+                                            <div class="flex items-center justify-center gap-6 text-gray-300 text-sm font-medium">
+                                                <template x-if="plan.type">
+                                                    <span class="flex items-center gap-2">
+                                                        <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                                        <span x-text="plan.type"></span>
+                                                    </span>
+                                                </template>
+                                                <template x-if="plan.area">
+                                                    <span class="flex items-center gap-2">
+                                                        <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                        <span x-text="plan.area"></span>
+                                                    </span>
+                                                </template>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
                             </div>
 
                             <!-- Next Button -->
-                            <button @click.stop="next()" class="absolute right-4 md:right-10 z-[110] p-2 text-white/50 hover:text-white bg-white/5 hover:bg-brand-accent/20 rounded-full transition-all duration-300 focus:outline-none" x-show="plans.length > 1">
-                                <svg class="w-8 h-8 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <button @click.stop="next()" class="absolute right-4 md:right-10 z-[110] p-3 text-white/50 hover:text-white bg-white/5 hover:bg-brand-accent/50 rounded-full transition-all duration-300 focus:outline-none backdrop-blur-md border border-white/10" x-show="plans.length > 1">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </button>
                         </div>
                     </div>

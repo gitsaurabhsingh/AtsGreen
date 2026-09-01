@@ -164,13 +164,32 @@
             @if($project->floorPlans->count() > 0)
                 <div class="mt-6">
                     <h5 class="text-sm font-semibold text-gray-700 mb-3">Existing Floor Plans ({{ $project->floorPlans->count() }})</h5>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($project->floorPlans as $plan)
-                            <div class="border border-gray-200 rounded-md p-2 bg-white flex flex-col items-center justify-between shadow-sm">
-                                <a href="{{ $plan->image }}" target="_blank" class="w-full h-24 flex items-center justify-center overflow-hidden mb-2">
+                            <div class="border border-gray-200 rounded-md p-4 bg-white flex flex-col shadow-sm">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-gray-500 uppercase">ID: {{ $plan->id }}</span>
+                                    <label class="flex items-center text-xs text-red-600 hover:text-red-800 cursor-pointer">
+                                        <input type="checkbox" name="delete_floor_plans[]" value="{{ $plan->id }}" class="mr-1"> Delete
+                                    </label>
+                                </div>
+                                <a href="{{ $plan->image }}" target="_blank" class="w-full h-40 flex items-center justify-center overflow-hidden mb-4 bg-gray-50 rounded border border-gray-100">
                                     <img src="{{ $plan->image }}" alt="{{ $plan->title }}" class="max-h-full max-w-full object-contain">
                                 </a>
-                                <span class="text-xs text-gray-600 text-center truncate w-full px-1" title="{{ $plan->title }}">{{ $plan->title }}</span>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                        <input type="text" name="existing_floor_plans[{{ $plan->id }}][title]" value="{{ old('existing_floor_plans.'.$plan->id.'.title', $plan->title) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-1.5 text-sm border">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Type (e.g. 3 BHK + 4 Toilet)</label>
+                                        <input type="text" name="existing_floor_plans[{{ $plan->id }}][type]" value="{{ old('existing_floor_plans.'.$plan->id.'.type', $plan->type) }}" placeholder="e.g. 3 BHK + 4 Toilet" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-1.5 text-sm border">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Area (e.g. 2350)</label>
+                                        <input type="text" name="existing_floor_plans[{{ $plan->id }}][area]" value="{{ old('existing_floor_plans.'.$plan->id.'.area', $plan->area) }}" placeholder="e.g. 2350 Sq.Ft." class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring focus:ring-brand focus:ring-opacity-50 px-3 py-1.5 text-sm border">
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>
